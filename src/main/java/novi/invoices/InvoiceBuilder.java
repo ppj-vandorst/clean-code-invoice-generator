@@ -2,14 +2,17 @@ package novi.invoices;
 
 import java.util.List;
 
-public class InvoiceGenerator {
+import novi.invoices.model.Order;
+import novi.invoices.model.OrderItem;
 
-    public String generateInvoice(List<OrderLine> orderLines) {
-        var orderTotal = calculateOrderTotal(orderLines);
+public class InvoiceBuilder {
+
+    public String buildInvoice(Order order) {
+        var orderTotal = calculateOrderTotal(order.getItems());
 
         StringBuilder invoiceBuilder = new StringBuilder();
         invoiceBuilder.append(generateHeader());
-        invoiceBuilder.append(formatOrderLines(orderLines));
+        invoiceBuilder.append(formatOrderLines(order.getItems()));
         invoiceBuilder.append(generateTotalSection(orderTotal));
         invoiceBuilder.append(generateFooter());
 
@@ -28,22 +31,22 @@ public class InvoiceGenerator {
         return headerBuilder.toString();
     }
 
-    public String formatOrderLines(List<OrderLine> orderLines) {
+    public String formatOrderLines(List<OrderItem> orderLines) {
         var linesBuilder = new StringBuilder();
 
         for (var line : orderLines) {
-            var totalPrice = line.count * line.price;
-            linesBuilder.append(String.format("%s  | %dx | $%.2f\n", line.name, line.count, totalPrice));
+            var totalPrice = line.getCount() * line.getProduct().getPrice();
+            linesBuilder.append(String.format("%s  | %dx | $%.2f\n", line.getProduct().getName(), line.getCount(), totalPrice));
             linesBuilder.append("---------------------------\n");
         }
 
         return linesBuilder.toString();
     }
 
-    public double calculateOrderTotal(List<OrderLine> orderLines) {
+    public double calculateOrderTotal(List<OrderItem> orderLines) {
         var total = 0;
         for (var line : orderLines) {
-            total += line.price * line.count;
+            total += line.getProduct().getPrice() * line.getCount();
         }
 
         return total;

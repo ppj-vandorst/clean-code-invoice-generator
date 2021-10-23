@@ -1,16 +1,13 @@
 package novi.invoices;
 
-import java.util.List;
+import novi.invoices.dto.OrderItemInputDto;
+import novi.invoices.dto.OrderRequestDto;
 
 public class Main {
     public static void main(String[] args) {
-        InvoiceGenerator generator = new InvoiceGenerator();
+        OrderService service = new OrderService();
 
-        var orderLines = List.of(new OrderLine(5, 2.99, "Product 1"), new OrderLine(2, 2.00, "Product 2"),
-                new OrderLine(1, 6.99, "Product 3"), new OrderLine(3, 12.00, "Product 4"));
-
-        var invoice = generator.generateInvoice(orderLines);
-
-        System.out.println(invoice);
+        var request = new OrderRequestDto("test@test.com", new OrderItemInputDto(1, 1));
+        service.processOrderRequest(request);
     }
 }
